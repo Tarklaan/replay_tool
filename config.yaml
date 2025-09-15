@@ -1,8 +1,0 @@
-# Configuration file
-instruments:
-  - NQ
-  - ES
-session:
-  start: "09:30"
-  end: "16:00"
-default_balance: 100000
