@@ -1,13 +1,21 @@
 import pandas as pd
+from replay_tool.utils.utils_db import save_candles
 
-def load_data(filepath: str) -> pd.DataFrame:
-    """
-    Load OHLCV data from CSV.
-    CSV must have: datetime;open;high;low;close;volume
-    """
-    df = pd.read_csv(filepath, sep=";")  # 👈 fix separator
-    df['datetime'] = pd.to_datetime(df['datetime'])
+def load_data(path: str, save_to_db: bool = True):
+    df = pd.read_csv(path, sep=";")
+
+    # Ensure datetime column
+    if "datetime" in df.columns:
+        df["datetime"] = pd.to_datetime(df["datetime"])
+    else:
+        raise ValueError("CSV must contain a 'datetime' column")
+
+    # Save to DB if requested
+    if save_to_db:
+        save_candles(df)
+
     return df
+
 
 def extract_sessions(df: pd.DataFrame, start="09:30", end="16:00") -> dict:
     """
