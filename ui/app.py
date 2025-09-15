@@ -1,10 +1,16 @@
 import streamlit as st
 import pandas as pd
+import time
+import sys
+import os
+
+# Add the parent directory to Python path so we can import from replay_tool
+sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
+
 from data.data_loader import load_data, extract_sessions
 from core.session_picker import pick_random_session
 from core.replay_engine import replay_session
 from ui.chart import plot_candles
-import time
 
 # Load data once
 DATA_PATH = "data/sample_data.csv"

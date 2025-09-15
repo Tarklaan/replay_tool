@@ -3,9 +3,9 @@ import pandas as pd
 def load_data(filepath: str) -> pd.DataFrame:
     """
     Load OHLCV data from CSV.
-    CSV must have: datetime, open, high, low, close, volume
+    CSV must have: datetime;open;high;low;close;volume
     """
-    df = pd.read_csv(filepath)
+    df = pd.read_csv(filepath, sep=";")  # 👈 fix separator
     df['datetime'] = pd.to_datetime(df['datetime'])
     return df
 
