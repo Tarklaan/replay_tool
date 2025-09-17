@@ -1,5 +1,5 @@
 import streamlit as st
-from utils.exchange_utils import get_metatrader_symbols
+from replay_tool.utils.exchange_utils import get_metatrader_symbols
 
 
 def instruments_control():

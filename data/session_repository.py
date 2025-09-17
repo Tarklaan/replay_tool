@@ -2,7 +2,7 @@
 
 import pandas as pd
 from sqlalchemy import text
-from utils.utils_db import get_engine
+from replay_tool.utils.utils_db import get_engine
 
 
 def save_session(date: str, df: pd.DataFrame, table_name="sessions"):

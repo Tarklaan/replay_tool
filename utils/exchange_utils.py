@@ -37,8 +37,8 @@ class MetatraderClient:
                     start_datetime,
                     end_datetime
                 )
-                if not data:
-                    print(f"[WARN] No data received for {self.symbol}")
+                if data is None or len(data) == 0:
+                    print(f"No data received for {self.symbol}")
                     return None
 
                 # Convert to DataFrame

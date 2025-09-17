@@ -1,9 +1,9 @@
 import streamlit as st
 
 # Internal imports (match project structure)
-from utils.exchange_utils import get_metatrader_symbols, download_symbol_history
-from ui.chart import plot_candles
-from utils.utils_db import load_candles
+from replay_tool.utils.exchange_utils import get_metatrader_symbols, download_symbol_history
+from replay_tool.ui.chart import plot_candles
+from replay_tool.utils.utils_db import load_candles
 
 
 # --- Streamlit UI ---

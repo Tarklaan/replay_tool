@@ -1,7 +1,7 @@
 # replay_tool/data/data_loader.py
 
 import pandas as pd
-from utils.utils_db import save_candles
+from replay_tool.utils.utils_db import save_candles
 
 
 def load_data(path: str, save_to_db: bool = True):

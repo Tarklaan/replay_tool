@@ -4,65 +4,47 @@ import os
 
 
 def get_engine():
-    """
-    Create a SQLAlchemy engine for PostgreSQL using env variables.
-    """
     DB_USER = os.getenv("replay_DB_USER")
     DB_PASS = os.getenv("replay_DB_PASS")
-    DB_HOST = os.getenv("replay_DB_HOST", "localhost")
-    DB_PORT = os.getenv("replay_DB_PORT", "5432")
+    DB_HOST = os.getenv("replay_DB_HOST")
+    DB_PORT = os.getenv("replay_DB_PORT")
     DB_NAME = os.getenv("replay_DB_NAME")
 
     engine_url = f"postgresql+psycopg2://{DB_USER}:{DB_PASS}@{DB_HOST}:{DB_PORT}/{DB_NAME}"
-    return create_engine(engine_url, echo=False, future=True)
+    return create_engine(engine_url, echo=False)
 
 
-def save_dataframe(df: pd.DataFrame, table_name: str, if_exists: str = "append"):
-    """
-    Save a DataFrame to the given PostgreSQL table.
-    Defaults to appending data.
-    """
-    if df.empty:
-        print(f"[WARN] Tried to save empty DataFrame into {table_name}. Skipping.")
-        return
-
+def ensure_symbol_table(symbol: str):
+    """Create table for symbol if it doesn't exist."""
     engine = get_engine()
-    df.to_sql(table_name, engine, if_exists=if_exists, index=False)
-
-
-def load_dataframe(query: str) -> pd.DataFrame:
-    """
-    Run a SQL query and return results as a DataFrame.
-    """
-    engine = get_engine()
-    with engine.connect() as conn:
-        return pd.read_sql(text(query), conn)
+    with engine.begin() as conn:
+        conn.execute(text(f"""
+            CREATE TABLE IF NOT EXISTS public."{symbol}" (
+                datetime TIMESTAMP NOT NULL,
+                open DOUBLE PRECISION,
+                high DOUBLE PRECISION,
+                low DOUBLE PRECISION,
+                close DOUBLE PRECISION,
+                volume DOUBLE PRECISION,
+                PRIMARY KEY (datetime)
+            );
+        """))
 
 
 def save_candles(df: pd.DataFrame, symbol: str):
-    """
-    Save OHLCV candles into the 'candles' table, tagging them with the symbol.
-    """
-    if df.empty:
-        print(f"[WARN] No candles to save for {symbol}. Skipping.")
-        return
-
-    df["symbol"] = symbol
-    save_dataframe(df, "candles")
+    """Save candles into its own symbol table."""
+    ensure_symbol_table(symbol)
+    engine = get_engine()
+    df.to_sql(symbol, engine, if_exists="append", index=False, schema="public")
 
 
 def load_candles(symbol: str, limit: int = 1000) -> pd.DataFrame:
-    """
-    Load candles for a given symbol from the DB.
-    Results are ordered by datetime ASC and limited.
-    """
-    query = f"""
-        SELECT *
-        FROM candles
-        WHERE symbol = :symbol
-        ORDER BY datetime ASC
-        LIMIT :limit;
-    """
+    ensure_symbol_table(symbol)
     engine = get_engine()
+    query = f"""
+        SELECT * FROM public."{symbol}"
+        ORDER BY datetime ASC
+        LIMIT {limit};
+    """
     with engine.connect() as conn:
-        return pd.read_sql(text(query), conn, params={"symbol": symbol, "limit": limit})
+        return pd.read_sql(text(query), conn)
