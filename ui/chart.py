@@ -50,29 +50,94 @@ def plot_candles(df: pd.DataFrame, title: str = "Candlestick Chart", height: int
 
     df["datetime"] = pd.to_datetime(df["datetime"])
 
-    fig = go.Figure(
-        data=[
-            go.Candlestick(
-                x=df["datetime"],
-                open=df["open"],
-                high=df["high"],
-                low=df["low"],
-                close=df["close"],
-                name="Candles",
-            )
-        ]
+    fig = go.Figure()
+    
+    fig.add_trace(
+        go.Candlestick(
+            x=df["datetime"],
+            open=df["open"],
+            high=df["high"],
+            low=df["low"],
+            close=df["close"],
+            name="",
+            showlegend=False,
+            increasing_line_color='#26a69a',
+            increasing_fillcolor='#26a69a',
+            decreasing_line_color='#ef5350',
+            decreasing_fillcolor='#ef5350',
+            line=dict(width=1),
+        )
     )
 
     fig.update_layout(
-        title=title,
-        xaxis=dict(title="Time", rangeslider=dict(visible=False)),
-        yaxis=dict(title="Price"),
+        title=dict(
+            text=title,
+            x=0.5,
+            font=dict(size=16, color='white')
+        ),
+        xaxis=dict(
+            title="",
+            rangeslider=dict(visible=False),
+            showgrid=True,
+            gridcolor='rgba(128,128,128,0.2)',
+            showspikes=True,
+            spikecolor="white",
+            spikethickness=1,
+            spikedash="solid",
+            spikemode="across"
+        ),
+        yaxis=dict(
+            title="",
+            side="right",
+            showgrid=True,
+            gridcolor='rgba(128,128,128,0.2)',
+            showspikes=True,
+            spikecolor="white",
+            spikethickness=1,
+            spikedash="solid",
+            spikemode="across"
+        ),
         height=height,
-        template="plotly_dark",
-        margin=dict(l=20, r=20, t=40, b=20),
+        plot_bgcolor='#131722',
+        paper_bgcolor='#131722',
+        font=dict(color='white', family='Arial'),
+        margin=dict(l=10, r=60, t=40, b=20),
+        hovermode='x unified',
+        dragmode='pan'
+    )
+    
+    fig.update_xaxes(
+        showline=True,
+        linewidth=1,
+        linecolor='rgba(128,128,128,0.5)',
+        mirror=True
+    )
+    
+    fig.update_yaxes(
+        showline=True,
+        linewidth=1,
+        linecolor='rgba(128,128,128,0.5)',
+        mirror=True
     )
 
-    st.plotly_chart(fig, use_container_width=True, key=f"static_chart_{hash(str(df.iloc[0]['datetime']) if len(df) > 0 else 'empty')}")
+    st.plotly_chart(
+        fig, 
+        use_container_width=True, 
+        key=f"static_chart_{hash(str(df.iloc[0]['datetime']) if len(df) > 0 else 'empty')}",
+        config={
+            'displayModeBar': True,
+            'modeBarButtonsToAdd': ['drawline', 'drawopenpath', 'drawclosedpath', 'drawcircle', 'drawrect', 'eraseshape'],
+            'modeBarButtonsToRemove': ['lasso2d', 'select2d'],
+            'displaylogo': False,
+            'toImageButtonOptions': {
+                'format': 'png',
+                'filename': 'chart',
+                'height': 600,
+                'width': 1200,
+                'scale': 2
+            }
+        }
+    )
 
 
 def plot_replay_candles(static_df: pd.DataFrame, replay_df: pd.DataFrame, replay_index: int, title: str = "Replay Chart", height: int = 600):

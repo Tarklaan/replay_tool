@@ -92,7 +92,7 @@ def load_random_session(symbol: str):
     session_df = df[(df["datetime"] >= start_time) & (df["datetime"] <= end_time)].copy()
     
     ny_open_day2 = pd.to_datetime(f"{day2} 14:30:00")
-    ny_close_day2 = pd.to_datetime(f"{day2} 21:00:00")
+    ny_close_day2 = pd.to_datetime(f"{day2} 23:30:00")
     
     session_df["phase"] = "static"
     session_df.loc[
