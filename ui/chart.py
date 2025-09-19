@@ -45,9 +45,10 @@ def resample_data(df: pd.DataFrame, timeframe: str):
 
 def plot_candles(df: pd.DataFrame, title: str = "Candlestick Chart", height: int = 600):
     if df is None or df.empty:
-        st.warning("⚠️ No data available to plot.")
+        st.error("No data available to plot.")
         return
 
+    df = df.copy()
     df["datetime"] = pd.to_datetime(df["datetime"])
 
     fig = go.Figure()
@@ -72,16 +73,17 @@ def plot_candles(df: pd.DataFrame, title: str = "Candlestick Chart", height: int
     fig.update_layout(
         title=dict(
             text=title,
-            x=0.5,
-            font=dict(size=16, color='white')
+            x=0.02,
+            y=0.98,
+            font=dict(size=18, color='white', family='Arial Black')
         ),
         xaxis=dict(
             title="",
             rangeslider=dict(visible=False),
             showgrid=True,
-            gridcolor='rgba(128,128,128,0.2)',
+            gridcolor='rgba(128,128,128,0.1)',
             showspikes=True,
-            spikecolor="white",
+            spikecolor="rgba(255,255,255,0.6)",
             spikethickness=1,
             spikedash="solid",
             spikemode="across"
@@ -90,50 +92,59 @@ def plot_candles(df: pd.DataFrame, title: str = "Candlestick Chart", height: int
             title="",
             side="right",
             showgrid=True,
-            gridcolor='rgba(128,128,128,0.2)',
+            gridcolor='rgba(128,128,128,0.1)',
             showspikes=True,
-            spikecolor="white",
+            spikecolor="rgba(255,255,255,0.6)",
             spikethickness=1,
             spikedash="solid",
             spikemode="across"
         ),
         height=height,
-        plot_bgcolor='#131722',
-        paper_bgcolor='#131722',
+        plot_bgcolor='#0b0f1a',
+        paper_bgcolor='#0b0f1a',
         font=dict(color='white', family='Arial'),
-        margin=dict(l=10, r=60, t=40, b=20),
+        margin=dict(l=0, r=80, t=50, b=30),
         hovermode='x unified',
-        dragmode='pan'
+        dragmode='pan',
+        showlegend=False
     )
     
     fig.update_xaxes(
         showline=True,
         linewidth=1,
-        linecolor='rgba(128,128,128,0.5)',
-        mirror=True
+        linecolor='rgba(128,128,128,0.3)',
+        mirror=False,
+        tickfont=dict(size=11),
+        fixedrange=False
     )
     
     fig.update_yaxes(
         showline=True,
         linewidth=1,
-        linecolor='rgba(128,128,128,0.5)',
-        mirror=True
+        linecolor='rgba(128,128,128,0.3)',
+        mirror=False,
+        tickfont=dict(size=11),
+        fixedrange=False
     )
 
+    chart_key = "main_chart"
+    
     st.plotly_chart(
         fig, 
         use_container_width=True, 
-        key=f"static_chart_{hash(str(df.iloc[0]['datetime']) if len(df) > 0 else 'empty')}",
+        key=chart_key,
         config={
             'displayModeBar': True,
-            'modeBarButtonsToAdd': ['drawline', 'drawopenpath', 'drawclosedpath', 'drawcircle', 'drawrect', 'eraseshape'],
-            'modeBarButtonsToRemove': ['lasso2d', 'select2d'],
+            'modeBarButtonsToAdd': ['drawline', 'drawrect', 'eraseshape'],
+            'modeBarButtonsToRemove': ['lasso2d', 'select2d', 'autoScale2d'],
             'displaylogo': False,
+            'scrollZoom': True,
+            'doubleClick': 'autosize',
             'toImageButtonOptions': {
                 'format': 'png',
-                'filename': 'chart',
-                'height': 600,
-                'width': 1200,
+                'filename': f'{title}_chart',
+                'height': height,
+                'width': 1400,
                 'scale': 2
             }
         }
