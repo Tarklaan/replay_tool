@@ -17,6 +17,16 @@ st.set_page_config(
     initial_sidebar_state="collapsed"
 )
 
+st.markdown("""
+<style>
+    /* Hide Streamlit header and footer */
+    header, footer {visibility: hidden;}
+    /* Expand chart to full width */
+    .block-container {padding-top: 0rem; padding-bottom: 0rem;}
+</style>
+""", unsafe_allow_html=True)
+
+
 if "chart_data" not in st.session_state:
     st.error("No chart data found. Please load a chart first.")
     if st.button("← Back to Home"):

@@ -1,36 +1,34 @@
 replay_tool/
-│
-├── ui/                         # 🎨 User interface (Streamlit)
+├── core/                          # Core business logic
+│   ├── gann.py
+│   ├── replay_engine.py
+│   ├── session_picker.py
 │   ├── __init__.py
-│   ├── app.py                  # Main entry (Streamlit app)
-│   ├── chart.py                # Plotly candlestick chart + overlays
-│   └── controls.py             # UI controls (instrument/session picker, playback speed, manual trade buttons)
+│   └── __pycache__/
 │
-├── core/                       # 🧠 Core replay + session logic
+├── data/                          # Data access & repositories
+│   ├── candle_repository.py
+│   ├── data_loader.py
+│   ├── session_repository.py
+│   ├── trade_repository.py
 │   ├── __init__.py
-│   ├── replay_engine.py        # Candle-by-candle replay engine
-│   ├── session_picker.py       # Select sessions (NY, London, random date picker)
-│   └── strategy_runner.py      # (Optional placeholder — skip automation if manual only)
+│   └── __pycache__/
 │
-├── data/                       # 📊 Data handling (DB + ETL)
+├── ui/                            # Streamlit UI
+│   ├── app.py                     # Main entrypoint
+│   ├── chart.py                   # Chart utilities
+│   ├── controls.py                # UI controls (buttons, selectors)
 │   ├── __init__.py
-│   ├── data_loader.py          # Import candles (CSV/API → DB)
-│   ├── candle_repository.py    # Store/fetch OHLCV candles from DB
-│   ├── session_repository.py   # Store/fetch extracted sessions
-│   └── trade_repository.py     # Store/fetch manual trades
+│   ├── __pycache__/
+│   └── pages/
+│       └── chart.py               # Full-screen chart page
 │
-├── utils/                      # 🔧 Helpers + integrations
+├── utils/                         # Shared helpers
+│   ├── exchange_utils.py
+│   ├── utils_db.py
 │   ├── __init__.py
-│   ├── exchange_utils.py       # MetaTrader/Binance/Bybit/Kraken connectors
-│   └── utils_db.py             # Postgres engine + helpers (create tables, save/load)
-│   
+│   └── __pycache__/
 │
-├── tests/                      # 🧪 Unit tests
-│   ├── __init__.py
-│   ├── test_sessions.py        # Test session extraction + picker
-│   ├── test_replay.py          # Test replay engine step-by-step
-│   └── test_db.py              # Test DB save/load
-│
-├── requirements.txt            # Python dependencies
-├── README.md                   # Project documentation
-└── __init__.py                 # (Optional, makes project pip-installable)
+├── .gitignore
+├── README.md
+└── vs.bat                         # Batch file to start environment
